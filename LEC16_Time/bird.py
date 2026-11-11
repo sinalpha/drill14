@@ -8,6 +8,13 @@ import game_framework
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel = 30 cm (수업 예제와 동일)
 FLY_SPEED_KMPH_MIN = 21.0       # 시속 21 ~ 24 km
 FLY_SPEED_KMPH_MAX = 24.0
+METERS_PER_FLAP = 1.0           # 날갯짓 한 번에 1 m 전진
+FRAMES_PER_FLAP = 14            # 날갯짓 1회 = 스프라이트 14프레임 전체 1사이클
+
+
+def kmph_to_pps(kmph):
+    """km/h -> m/s -> pixel/s"""
+    return kmph * 1000.0 / 3600.0 * PIXEL_PER_METER
 
 
 class Bird:
@@ -25,15 +32,19 @@ class Bird:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = x, y
         self.dir = dir  # +1: 오른쪽, -1: 왼쪽
+        self.frame = random.uniform(0, 14)  # 새마다 날갯짓 위상을 다르게
         # 새마다 21~24 km/h 사이의 속도를 가진다
         self.speed_kmph = random.uniform(FLY_SPEED_KMPH_MIN, FLY_SPEED_KMPH_MAX)
         self.speed_mps = self.speed_kmph * 1000.0 / 3600.0   # 약 5.83 ~ 6.67 m/s
         self.speed_pps = self.speed_mps * PIXEL_PER_METER    # 약 194 ~ 222 px/s
-        self.frame = random.uniform(0, 14)  # 새마다 날갯짓 위상을 다르게
+        # 1 m 갈 때 1번 날갯짓 -> 초당 날갯짓 횟수 = 속도(m/s) / 1 m (약 5.8 ~ 6.7 회/s)
+        self.flaps_per_second = self.speed_mps / METERS_PER_FLAP
+        # 초당 재생해야 하는 프레임 수 (약 82 ~ 93 프레임/s)
+        self.frames_per_second = FRAMES_PER_FLAP * self.flaps_per_second
 
     def update(self):
-        # 임시 값: 초당 14프레임 (물리 값은 이후 커밋에서 적용)
-        self.frame = (self.frame + 14 * game_framework.frame_time) % 14
+        self.frame = (self.frame + self.frames_per_second *
+                      game_framework.frame_time) % FRAMES_PER_FLAP
         self.x += self.dir * self.speed_pps * game_framework.frame_time
 
         # 가장자리에 닿으면 방향 전환
