@@ -4,6 +4,12 @@ from pico2d import *
 import game_framework
 
 
+# ---- 딱따구리 비행 물리 값 -------------------------------------------------
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel = 30 cm (수업 예제와 동일)
+FLY_SPEED_KMPH_MIN = 21.0       # 시속 21 ~ 24 km
+FLY_SPEED_KMPH_MAX = 24.0
+
+
 class Bird:
     image = None
 
@@ -19,7 +25,10 @@ class Bird:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = x, y
         self.dir = dir  # +1: 오른쪽, -1: 왼쪽
-        self.speed_pps = random.uniform(150, 250)  # 임시 값 (px/s)
+        # 새마다 21~24 km/h 사이의 속도를 가진다
+        self.speed_kmph = random.uniform(FLY_SPEED_KMPH_MIN, FLY_SPEED_KMPH_MAX)
+        self.speed_mps = self.speed_kmph * 1000.0 / 3600.0   # 약 5.83 ~ 6.67 m/s
+        self.speed_pps = self.speed_mps * PIXEL_PER_METER    # 약 194 ~ 222 px/s
         self.frame = random.uniform(0, 14)  # 새마다 날갯짓 위상을 다르게
 
     def update(self):
