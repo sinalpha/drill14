@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 import game_framework
 
@@ -17,8 +19,8 @@ class Bird:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = x, y
         self.dir = dir  # +1: 오른쪽, -1: 왼쪽
-        self.speed_pps = 200  # 임시 값 (px/s)
-        self.frame = 0.0
+        self.speed_pps = random.uniform(150, 250)  # 임시 값 (px/s)
+        self.frame = random.uniform(0, 14)  # 새마다 날갯짓 위상을 다르게
 
     def update(self):
         # 임시 값: 초당 14프레임 (물리 값은 이후 커밋에서 적용)
