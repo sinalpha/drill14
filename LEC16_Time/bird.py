@@ -40,5 +40,11 @@ class Bird:
             row += 1
         top, h = Bird.ROWS[row]
         bottom = Bird.SHEET_H - top - h
-        Bird.image.clip_draw(index * Bird.CELL_W, bottom, Bird.CELL_W, h,
-                             self.x, self.y, Bird.CELL_W // 2, h // 2)
+        w_dst, h_dst = Bird.CELL_W // 2, h // 2
+        if self.dir == 1:  # 시트의 새는 오른쪽을 본다
+            Bird.image.clip_draw(index * Bird.CELL_W, bottom, Bird.CELL_W, h,
+                                 self.x, self.y, w_dst, h_dst)
+        else:  # 왼쪽으로 날 때는 수평 반전
+            Bird.image.clip_composite_draw(index * Bird.CELL_W, bottom,
+                                           Bird.CELL_W, h, 0, 'h',
+                                           self.x, self.y, w_dst, h_dst)
