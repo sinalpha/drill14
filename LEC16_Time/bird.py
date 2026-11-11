@@ -10,16 +10,27 @@ class Bird:
     ROWS = [(0, 170), (170, 170), (340, 166)]  # (위에서부터의 y, 높이)
     FRAMES_PER_ROW = [5, 5, 4]
     SHEET_H = 506
+    MARGIN = 45  # 화면 가장자리에서 방향을 바꾸는 여백(px)
 
-    def __init__(self, x=400, y=300):
+    def __init__(self, x=400, y=300, dir=1):
         if Bird.image is None:
             Bird.image = load_image('bird_animation.png')
         self.x, self.y = x, y
+        self.dir = dir  # +1: 오른쪽, -1: 왼쪽
+        self.speed_pps = 200  # 임시 값 (px/s)
         self.frame = 0.0
 
     def update(self):
         # 임시 값: 초당 14프레임 (물리 값은 이후 커밋에서 적용)
         self.frame = (self.frame + 14 * game_framework.frame_time) % 14
+        self.x += self.dir * self.speed_pps * game_framework.frame_time
+
+        # 가장자리에 닿으면 방향 전환
+        right = get_canvas_width() - Bird.MARGIN
+        if self.x > right:
+            self.x, self.dir = right, -1
+        elif self.x < Bird.MARGIN:
+            self.x, self.dir = Bird.MARGIN, 1
 
     def draw(self):
         index = int(self.frame)
