@@ -72,7 +72,7 @@ class Run:
         boy.frame = 0
 
     def do(self, boy):
-        boy.frame = boy.frame + RUN_FRAMES_PER_SECOND * game_framework.frame_tim
+        boy.frame = boy.frame + RUN_FRAMES_PER_SECOND * game_framework.frame_time
         boy.frame = (boy.frame + 1) % 8
         boy.x += boy.dir * RUN_SPEED_PPS * game_framework.frame_time
         boy.x = max(25, min(get_canvas_width() - 25, boy.x))
