@@ -1,4 +1,6 @@
 from pico2d import *
+import random
+
 import game_world
 import game_framework
 from boy import Boy
@@ -31,7 +33,10 @@ def init():
     grass = Grass()
     game_world.add_oject(grass, 0)
 
-    game_world.add_oject(Bird())
+    for i in range(10):
+        bird = Bird(random.randint(100, 1500), 200 + i * 35,
+                    random.choice([-1, 1]))
+        game_world.add_oject(bird)
 
 
 def pause():
