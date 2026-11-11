@@ -30,4 +30,4 @@ class Bird:
         top, h = Bird.ROWS[row]
         bottom = Bird.SHEET_H - top - h
         Bird.image.clip_draw(index * Bird.CELL_W, bottom, Bird.CELL_W, h,
-                             self.x, self.y)
+                             self.x, self.y, Bird.CELL_W // 2, h // 2)
